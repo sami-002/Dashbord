@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>داشبورد — WebProg</title>
+
+  <!-- Vazirmatn from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 RTL -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+     
+       
+   
+    .comment-card {
+      background-color: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+  
+    .avatar1 {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .table th {
+      color: #555;
+      font-weight: bold;
+    }
+    .table td {
+      vertical-align: middle;
+    }
+
+
+  
+    .card1 {
+      border-radius: 16px;
+      background-color: #fff;
+    }
+    .profile-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .btn-custom {
+      background-color: #90caf9;
+      color: #0d47a1;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: bold;
+    }
+    .section-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+  
+    :root{
+      --bg:#eef6ff;
+      --card:#ffffff;
+      --accent:#4b63f6;
+      --muted:#8b95b8;
+      --soft:#f2f6ff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: 'Vazirmatn', sans-serif;
+      background:var(--bg);
+      color:#1f2a44;
+    }
+
+    /* topbar */
+    .topbar{
+      background:var(--card);
+      padding:12px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      box-shadow:0 6px 20px rgba(79,84,128,0.06);
+      position:sticky;
+      top:0;
+      z-index:1050;
+    }
+    .brand-title{ color:var(--accent); font-weight:700; }
+
+    .icon-btn{
+      background:transparent;
+      border:0;
+      font-size:18px;
+      color:#5b647a;
+      position:relative;
+    }
+    .badge-dot{
+      position:absolute;
+      top:-6px;
+      left:-6px;
+      background:#ef4444;
+      color:#fff;
+      font-size:11px;
+      padding:2px 6px;
+      border-radius:999px;
+    }
+
+    /* navbar dropdown custom */
+    .dropdown-menu{ min-width:220px; right:0; left:auto; border-radius:10px; }
+    .dropdown-item{ font-weight:500; }
+
+    /* sidebar */
+    #sidebar{
+      position:fixed;
+      top:70px;
+      right:0;
+      width:260px;
+      bottom:0;
+      background:var(--card);
+      padding:18px 12px;
+      box-shadow: -6px 0 20px rgba(79,84,128,0.04);
+      transition: transform .28s ease;
+      z-index:1040;
+      border-radius:10px 0 0 10px;
+      overflow:auto;
+    }
+    #sidebar.hide{ transform: translateX(265px); } /* hidden */
+    #sidebar .nav-item a{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      color:#42506b;
+      padding:12px 10px;
+      border-radius:10px;
+      text-decoration:none;
+      font-weight:500;
+    }
+    #sidebar .nav-item a i{
+      width:36px;height:36px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;
+      background:linear-gradient(180deg, rgba(75,99,246,0.08), rgba(75,99,246,0.03));
+      color:var(--accent);
+      font-size:18px;
+    }
+    #sidebar .nav-item a:hover{
+      background:var(--soft);
+      border-right:4px solid var(--accent);
+      color:#0b1220;
+    }
+
+    /* collapse toggle in sidebar */
+    .sb-collapse-btn{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      width:100%;
+      background:transparent;
+      border:0;
+      padding:12px 10px;
+      color:#42506b;
+      font-weight:600;
+    }
+    .sb-collapse-btn i.fa-chevron-down{ transition: transform .25s ease; }
+    .sb-collapse-btn.collapsed i.fa-chevron-down{ transform: rotate(-90deg); }
+
+    /* layout main */
+    main.content{
+      margin-right:280px; /* space for sidebar */
+      padding:26px;
+      transition: margin-right .28s ease;
+      min-height:calc(100vh - 90px);
+    }
+    main.content.full{ margin-right:20px; }
+
+    /* stat cards */
+    .info-card{
+      border-radius:14px;
+      padding:18px;
+      background:var(--card);
+      box-shadow:0 6px 20px rgba(79,84,128,0.03);
+      text-align:center;
+    }
+    .info-card h6{ font-weight:600; color:#394162; margin:0 0 6px 0; }
+    .info-card h3{ margin:0; font-weight:700; color:#0b1220; }
+    .small-icon{ font-size:28px; opacity:.95; margin-top:10px; }
+
+    /* top chart card */
+    .chart-card{ border-radius:14px; padding:18px; background:var(--card); box-shadow:0 6px 20px rgba(79,84,128,0.03); }
+
+    /* bottom section: three cards */
+    .bottom-row{ margin-top:3px; gap:20px; }
+    .card-donut, .card-comments, .card-progress{
+      background:var(--card);
+      border-radius:14px;
+      padding:18px;
+      box-shadow:0 6px 20px rgba(79,84,128,0.03);
+    }
+
+    /* donut legend */
+    .donut-legend{ display:flex; flex-direction:column; gap:10px; margin-top:12px; }
+    .legend-item{ display:flex; align-items:center; gap:10px; color:#394162; font-weight:600; }
+    .legend-dot{ width:16px;height:16px;border-radius:4px; display:inline-block; }
+
+    /* comments table */
+    .comments-table{ width:100%; border-collapse:collapse; direction:rtl; }
+    .comments-table thead th{ text-align:center; font-weight:700; padding:8px 6px; color:#0b1220; }
+    .comments-table tbody td{ vertical-align:middle; padding:5px 5px; color:#4b5563; border-top:1px solid #eef3ff; }
+    .avatar{ width:44px;height:44px;border-radius:50%; display:inline-block; overflow:hidden; }
+
+    /* progress bars */
+    .prog-row{ display:flex; flex-direction:column; gap:18px; }
+    .prog-item{ display:flex; align-items:center; gap:12px; }
+    .prog-label{ width:100px; font-weight:600; color:#394162; text-align:right; }
+    .progress{ height:12px; border-radius:8px; background:#eef3ff; overflow:hidden; }
+
+    /* small helpers */
+    .title-chip{
+      display:inline-block; background:linear-gradient(90deg,#1e60ff22,#4b63f644); color:var(--accent);
+      padding:6px 12px; border-radius:10px; font-weight:700; margin-bottom:6px;
+    }
+
+    /* responsive */
+    @media (max-width: 991px){
+      #sidebar{ top:64px; transform: translateX(265px); position:fixed; right:-36px }
+      #sidebar.show{ transform: translateX(0); }
+      main.content{ margin-right:20px; padding:14px; }
+      .info-card{ padding:12px }
+    }
+  
+
+      
+    
+  </style>
+</head>
+<body>
+
+  <!-- topbar -->
+  <header class="topbar">
+    <div class="d-flex align-items-center gap-2">
+      <button id="btnToggle" class="btn btn-light" aria-label="menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="brand-title">WebProg.io</div>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      <!-- notifications dropdown -->
+      <div class="dropdown">
+        <button class="btn icon-btn dropdown-toggle" type="button" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fa-regular fa-bell"></i>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="notifDropdown">
+          <li><h6 class="dropdown-header">اعلان‌ها</h6></li>
+          <li><a class="dropdown-item" href="#"><strong>سفارش جدید:</strong> سفارش #۱۲۳ ثبت شد</a></li>
+          <li><a class="dropdown-item" href="#"><strong>کاربر جدید:</strong> کاربر جدیدی ثبت نام کرد</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item text-center" href="#">مشاهده همه اعلان‌ها</a></li>
+        </ul>
+      </div>
+
+      <!-- messages dropdown -->
+      <div class="dropdown">
+        <button class="btn icon-btn position-relative dropdown-toggle" id="msgDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fa-regular fa-envelope"></i>
+          <span class="badge-dot">9</span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="msgDropdown">
+          <li><h6 class="dropdown-header">پیام‌ها</h6></li>
+          <li><a class="dropdown-item" href="#"><strong>علی:</strong> سلام، آماده هستید؟</a></li>
+          <li><a class="dropdown-item" href="#"><strong>مینا:</strong> فایل گزارش را ارسال کردم</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item text-center" href="#">مشاهده همه پیام‌ها</a></li>
+        </ul>
+      </div>
+
+      <!-- profile dropdown -->
+      <div class="dropdown">
+        <button class="btn d-flex align-items-center gap-2 border-0 bg-transparent dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <div class="text-end">
+            <div style="font-weight:700">علی شیخ</div>
+            <div style="color:var(--muted);font-size:13px">سوپر ادمین</div>
+          </div>
+          <img src="Resources/images/1.jpg" alt="avatar" class="rounded-circle" width="44" height="44" />
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user me-2"></i>پروفایل من</a></li>
+          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-gear me-2"></i>تنظیمات</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item text-danger" href="#"><i class="fa-solid fa-right-from-bracket me-2"></i>خروج</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- sidebar -->
+  <aside id="sidebar">
+    <ul class="nav flex-column">
+
+      <li class="nav-item mb-1">
+        <a class="nav-link" href="#"><i class="fa-solid fa-table-cells-large"></i> داشبورد</a>
+      </li>
+
+      <!-- sidebar item with dropdown -->
+      <li class="nav-item mb-1">
+        <button class="sb-collapse-btn collapsed w-100" data-bs-toggle="collapse" data-bs-target="#storeMenu" aria-expanded="false">
+          <span class="d-flex align-items-center"><i class="fa-solid fa-store"></i> فروشگاه</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="collapse" id="storeMenu">
+          <ul class="nav flex-column ps-3">
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-list"></i> دسته‌بندی‌ها</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-tag"></i> برچسب‌ها</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-star"></i> محصولات ویژه</a></li>
+          </ul>
+        </div>
+      </li>
+
+      <!-- another dropdown -->
+      <li class="nav-item mb-1">
+        <button class="sb-collapse-btn collapsed w-100" data-bs-toggle="collapse" data-bs-target="#ordersMenu" aria-expanded="false">
+          <span class="d-flex align-items-center"><i class="fa-solid fa-cart-shopping"></i> سفارشات</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="collapse" id="ordersMenu">
+          <ul class="nav flex-column ps-3">
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-clock"></i> در انتظار</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-check"></i> تکمیل‌شده</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-xmark"></i> کنسل‌شده</a></li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="nav-item mb-1"><a class="nav-link" href="#"><i class="fa-solid fa-box"></i> محصولات</a></li>
+      <li class="nav-item mb-1"><a class="nav-link" href="#"><i class="fa-solid fa-percent"></i> تخفیف‌ها</a></li>
+
+      <li class="nav-item mt-3">
+        <hr />
+        <div style="font-weight:700;color:#394162;padding:8px 12px">ابزارها</div>
+      </li>
+
+      <li class="nav-item mb-1"><a class="nav-link" href="#"><i class="fa-solid fa-users"></i> کاربران</a></li>
+      <li class="nav-item mb-1"><a class="nav-link" href="#"><i class="fa-solid fa-comments"></i> کامنت‌ها</a></li>
+      <li class="nav-item mb-1"><a class="nav-link" href="#"><i class="fa-solid fa-chart-line"></i> گزارشات</a></li>
+    </ul>
+  </aside>
+
+  <!-- main content -->
+  <main class="content" id="mainContent">
+    <div class="row">
+      <div class="col-md-8 col-12">
+        <div class="row">
+            <!-- stat cards -->
+    <div class="row g-3">
+      <div class="col-md-3 col-sm-6 col-6">
+        <div class="info-card">
+          <h6>لورم ایپسوم</h6>
+          <h3>450</h3>
+          <div class="small-icon text-danger"><i class="fa-regular fa-bookmark"></i></div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 col-6">
+        <div class="info-card">
+          <h6>لورم ایپسوم</h6>
+          <h3>95,600</h3>
+          <div class="small-icon text-success"><i class="fa-regular fa-user-plus"></i></div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 col-6">
+        <div class="info-card">
+          <h6>لورم ایپسوم</h6>
+          <h3>126,500</h3>
+          <div class="small-icon text-primary"><i class="fa-regular fa-user"></i></div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 col-6">
+        <div class="info-card">
+          <h6>نمایش پروفایل</h6>
+          <h3>18,600</h3>
+          <div class="small-icon" style="color:#8b5cf6"><i class="fa-regular fa-eye"></i></div>
+        </div>
+      </div>
+    </div>
+        </div>
+        
+          <!-- top chart -->
+    <div class="chart-card mt-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="m-0">لورم ایپسوم</h6>
+        <div style="color:var(--muted); font-weight:600">نمودار فروش ماهانه</div>
+      </div>
+      <canvas id="topChart" height="110"></canvas>
+    </div>
+    <div class="row mt-4">
+          <div class="col-md-5 mb-3 ">
+            <!-- progress bars -->
+      <div>
+        <div class="card-progress">
+          <h6 class="mb-3">لورم ایپسوم</h6>
+          <div class="prog-row">
+            <div class="prog-item">
+              <div class="prog-label">لورم ایپسوم</div>
+              <div style="flex:1">
+                <div class="progress">
+                  <div class="progress-bar" role="progressbar" style="width:25%; background:#b69cff" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div style="font-size:12px;color:var(--muted);margin-top:6px">لورم ایپسوم متن ساختگی</div>
+              </div>
+            </div>
+
+            <div class="prog-item">
+              <div class="prog-label">لورم ایپسوم</div>
+              <div style="flex:1">
+                <div class="progress">
+                  <div class="progress-bar" role="progressbar" style="width:55%; background:#7fc8ff" aria-valuenow="55"></div>
+                </div>
+                <div style="font-size:12px;color:var(--muted);margin-top:6px">لورم ایپسوم متن</div>
+              </div>
+            </div>
+
+            <div class="prog-item">
+              <div class="prog-label">لورم ایپسوم</div>
+              <div style="flex:1">
+                <div class="progress">
+                  <div class="progress-bar" role="progressbar" style="width:75%; background:#3dd4b2" aria-valuenow="75"></div>
+                </div>
+                <div style="font-size:12px;color:var(--muted);margin-top:6px">لورم ایپسوم</div>
+              </div>
+            </div>
+
+            <div class="prog-item">
+              <div class="prog-label">فروش هدف</div>
+              <div style="flex:1">
+                <div class="progress">
+                  <div class="progress-bar" role="progressbar" style="width:40%; background:#ff8b8b" aria-valuenow="40"></div>
+                </div>
+                <div style="font-size:12px;color:var(--muted);margin-top:6px">پیشرفت تا اهداف ماهانه</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+  
+          </div>
+          <div class="col-md-7 ">
+             <!-- comments table -->
+            <div class="container">
+    <div class="comment-card">
+      <!-- عنوان -->
+      <p>آخرین کامنت‌ها</p>
+
+      <!-- جدول کامنت‌ها -->
+      <table class="table">
+        <thead>
+          <tr>
+            <th>تصویر</th>
+            <th>نام کاربری</th>
+            <th>کامنت</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><img src="Resources/images/1.jpg" class="avatar1" alt="آواتار ۱"></td>
+            <td><small>لورم ایپسوم</small></td>
+            <td> <small>لورم ایپسوم متن ساختگی با تولید سادگی...</small></td>
+          </tr>
+          <tr>
+            <td><img src="Resources/images/4.jpg" class="avatar1" alt="آواتار ۲"></td>
+           <td><small>لورم ایپسوم</small></td>
+             <td> <small>لورم ایپسوم متن ساختگی با تولید سادگی...</small></td>
+          </tr>
+          <tr>
+            <td><img src="Resources/images/5.jpg" class="avatar1" alt="آواتار ۳"></td>
+            <td><small>لورم ایپسوم</small></td>
+            <td> <small>لورم ایپسوم متن ساختگی با تولید سادگی...</small></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+          </div>
+        </div>
+
+
+      </div>
+      <div class="col-md-4 col-12">
+        <div class=" py-4 ">
+
+      <!-- پروفایل علی شیخ -->
+      <div class="d-flex align-items-center mb-3 bg-light p-3 shadow rounded">
+        <img src="Resources/images/1.jpg" alt="عکس علی" class="profile-img me-3">
+        <div>
+          <h5 class="mb-0">علی شیخ</h5>
+          <small class="text-muted">@ali_sheikh</small>
+        </div>
+      </div>
+    <div class="card card1 p-3 shadow-sm">
+
+      <!-- عنوان لیست -->
+         <div class="section-title">لورم ایپسوم متن</div>
+
+      <!-- لیست کاربران -->
+      <div id="userList ">
+        <div class="d-flex align-items-center mb-3">
+          <img src="Resources/images/4.jpg" class="avatar me-3" alt="آواتار ۱">
+          <div>
+            <div>لورم ایپسوم</div>
+            <small class="text-muted">@lorem_ipsum</small>
+          </div>
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <img src="Resources/images/5.jpg" class="avatar me-3" alt="آواتار ۲">
+          <div>
+            <div>لورم ایپسوم</div>
+            <small class="text-muted">@lorem_ipsum</small>
+          </div>
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <img src="Resources/images/7.jpg" class="avatar me-3" alt="آواتار ۳">
+          <div>
+            <div>لورم ایپسوم</div>
+            <small class="text-muted">@lorem_ipsum</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- دکمه -->
+      <div class="text-center mt-3">
+        <button class="btn btn-custom">نمایش کاربران</button>
+      </div>
+    </div>
+       </div>
+        <!-- bottom three cards -->
+     <!-- the circle one -->
+    <div class="row bottom-row ">
+      <!-- donut -->
+      <div class="col-lg-12 col-md-12">
+        <div class="card-donut">
+          <div class="title-chip">لورم ایپسوم متن</div>
+          <div class="d-flex align-items-center">
+            <div style="flex:0 0 120px;">
+              <canvas id="donutChart" width="160" height="160"></canvas>
+            </div>
+            <div style="flex:1;padding-right:14px;">
+              <div class="donut-legend">
+                <div class="legend-item"><span class="legend-dot" style="background:#7fc8ff"></span> <span>پرداختی موفق <strong style="margin-left:6px">75.2%</strong></span></div>
+                <div class="legend-item"><span class="legend-dot" style="background:#7b8cff"></span> <span>پرداختی ناموفق <strong style="margin-left:6px">24.8%</strong></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    
+    </div>
+
+      </div>
+    </div>
+    
+    
+
+   
+
+    <!-- bottom three cards -->
+    
+
+    <!-- footer spacer -->
+    <div style="height:40px"></div>
+  </main>
+
+  <!-- scripts -->
+  <script>
+    // Sidebar toggle logic (desktop: hide, mobile: slide in)
+    const sidebar = document.getElementById('sidebar');
+    const btnToggle = document.getElementById('btnToggle');
+    const mainContent = document.getElementById('mainContent');
+
+    function updateLayoutOnResize(){
+      if(window.innerWidth <= 991){
+        sidebar.classList.add('hide');
+        mainContent.classList.add('full');
+      } else {
+        sidebar.classList.remove('show');
+        sidebar.classList.remove('hide');
+        mainContent.classList.remove('full');
+      }
+    }
+    updateLayoutOnResize();
+    window.addEventListener('resize', updateLayoutOnResize);
+
+    btnToggle.addEventListener('click', function(){
+      if(window.innerWidth <= 991){
+        sidebar.classList.toggle('show');
+      } else {
+        sidebar.classList.toggle('hide');
+        mainContent.style.marginRight = sidebar.classList.contains('hide') ? '20px' : '280px';
+      }
+    });
+
+    // rotate chevrons on collapse show/hide
+    document.querySelectorAll('.sb-collapse-btn').forEach(btn=>{
+      const target = document.querySelector(btn.getAttribute('data-bs-target'));
+      // on show
+      target.addEventListener('show.bs.collapse', ()=> btn.classList.remove('collapsed'));
+      target.addEventListener('hide.bs.collapse', ()=> btn.classList.add('collapsed'));
+    });
+
+    // TOP combined chart: bar + line (month sales + growth)
+    const topCtx = document.getElementById('topChart').getContext('2d');
+    const topChart = new Chart(topCtx, {
+      data: {
+        labels: ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان'],
+        datasets: [
+          {
+            type:'bar',
+            label:'فروش',
+            data:[3000,2000,1800,1300,1100,900,800,700],
+            backgroundColor: ['#84c8ff','#9cc4ff','#b69cff','#d1a2ff','#f2a7ff','#ffc2e2','#ffc7c7','#ffd6b5'],
+            borderRadius:10,
+            maxBarThickness:50
+          },
+          {
+            type:'line',
+            label:'درصد رشد',
+            data:[10,30,45,60,75,85,92,100],
+            yAxisID:'y1',
+            borderColor:'#333',
+            borderWidth:2,
+            tension:0.35,
+            pointBackgroundColor:'#fff',
+            pointBorderColor:'#333',
+            pointRadius:5,
+            fill:false
+          }
+        ]
+      },
+      options: {
+        responsive:true,
+        interaction:{ mode:'index', intersect:false },
+        plugins:{ legend:{ display:false } },
+        scales: {
+          y: { beginAtZero:true, grid:{ color:'#f0f3ff' } },
+          y1: {
+            position:'right',
+            beginAtZero:true,
+            min:0, max:100,
+            ticks:{ callback: v => v + '%' },
+            grid:{ drawOnChartArea:false }
+          },
+          x:{ grid:{ display:false } }
+        }
+      }
+    });
+
+    // DONUT chart
+    const donutCtx = document.getElementById('donutChart').getContext('2d');
+    const donut = new Chart(donutCtx, {
+      type: 'doughnut',
+      data: {
+        labels:['پرداختی موفق','پرداختی ناموفق'],
+        datasets:[{
+          data:[75.2,24.8],
+          backgroundColor:['#7fc8ff','#7b8cff'],
+          hoverOffset:6,
+          cutout:'70%'
+        }]
+      },
+      options:{
+        responsive:true,
+        plugins:{ legend:{ display:false } },
+        animation:{ animateRotate:true, animateScale:true }
+      }
+    });
+  </script>
+
+  <!-- Bootstrap JS (required for dropdowns & collapse) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
